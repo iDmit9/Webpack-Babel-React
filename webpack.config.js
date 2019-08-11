@@ -1,3 +1,4 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 
@@ -7,6 +8,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
+        chunkFilename: '[id].js',
         publicPath: ''
     },
     resolve: {
@@ -28,12 +30,9 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
-                            modules: true,
-                            localIdentName: '[name]__[local]__[hash:base64:5]'
-                            //use [path][name]__[local] for development
-                            //use [hash:base64] for production
-                            //The [local] placeholder contains original class.
-                            //Note: all reserved (<>:"/\|?*) and control filesystem characters (excluding characters in the [local] placeholder) will be converted to -.
+                            modules: {
+                                localIdentName: '[name]__[local]__[hash:base64:5]'
+                            }                         
                         }
                     },
                     {
@@ -42,9 +41,9 @@ module.exports = {
                             ident: 'postcss',
                             plugins: () => [
                                 autoprefixer({
-                                    browsers: [
+                                    overrideBrowserslist: [
                                         "> 1%",
-                                        "last 2 versions"   
+                                        "last 2 versions"  
                                     ]
                                 })
                             ]
@@ -57,5 +56,12 @@ module.exports = {
                 loader: 'url-loader?limit=8000&name=images/[name].[ext]'
             }
         ]
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: __dirname + '/src/index.html',
+            filename: 'index.html',
+            inject: 'body'
+        })
+    ]
 } 

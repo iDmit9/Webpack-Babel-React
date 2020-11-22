@@ -1,10 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
+    mode: 'production',
     devtool: 'cheap-module-source-map',
     entry: './src/index.js',
     output: {
@@ -27,7 +26,7 @@ module.exports = {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
-                    { loader: 'style-loader' },
+                    "style-loader",
                     { 
                         loader: 'css-loader',
                         options: {
@@ -40,22 +39,23 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            plugins: () => [
-                                autoprefixer({
-                                    overrideBrowserslist: [
-                                        "> 1%",
-                                        "last 2 versions"  
-                                    ]
-                                })
-                            ]
+                            postcssOptions: {
+                                plugins: [
+                                    [
+                                        "autoprefixer",
+                                    ],
+                                ],
+                            },
                         }
                     }
                 ]
             },
             {
                 test: /\.(png|jpe?g|gif)$/,
-                loader: 'url-loader?limit=8000&name=images/[name].[ext]'
+                loader: 'url-loader',
+                options: {
+                    limit: 8000,
+                }
             }
         ]
     },
@@ -67,9 +67,9 @@ module.exports = {
         })
     ],
     optimization: {
-        minimizer: [new UglifyJsPlugin({
+        minimize: true,
+        minimizer: [new TerserPlugin({
             test: /\.js(\?.*)?$/i,
-            sourceMap: true
         })]
     }
 } 

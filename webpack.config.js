@@ -1,10 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const autoprefixer = require('autoprefixer');
 
-module.exports = {
-    devtool: 'cheap-module-eval-source-map',
-    entry: './src/index.js',
+module.exports = {       
+    mode: 'development', 
+    devtool: 'eval-cheap-module-source-map',
+    entry: './src/index.js', //Using entry: './src/index.js': you can omit it, that's the default.
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
@@ -25,37 +25,47 @@ module.exports = {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
-                    { loader: 'style-loader' },
+                    "style-loader",
                     { 
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
                             modules: {
                                 localIdentName: '[name]__[local]__[hash:base64:5]'
+                                // localIdentName: '[name]__[local]__[contenthash:base64:5]'
                             }                         
                         }
                     },
                     {
                         loader: 'postcss-loader',
                         options: {
-                            ident: 'postcss',
-                            plugins: () => [
-                                autoprefixer({
-                                    overrideBrowserslist: [
-                                        "> 1%",
-                                        "last 2 versions"  
-                                    ]
-                                })
-                            ]
+                            postcssOptions: {
+                                plugins: [
+                                    [
+                                        "autoprefixer",
+                                    ],
+                                ],
+                            },
                         }
                     }
                 ]
             },
             {
                 test: /\.(png|jpe?g|gif)$/,
-                loader: 'url-loader?limit=8000&name=images/[name].[ext]'
+                loader: 'url-loader',
+                options: {
+                    limit: 8000,
+                }
             }
         ]
+    },
+    devServer: {
+        historyApiFallback: true,
+        contentBase: path.resolve(__dirname, './dist'),
+        open: true,
+        compress: true,
+        hot: true,
+        port: 8080,
     },
     plugins: [
         new HtmlWebpackPlugin({

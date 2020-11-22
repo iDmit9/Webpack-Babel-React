@@ -1,13 +1,8 @@
 {
     "presets": [
         ["@babel/preset-env", {
-            "targets": {
-                "browsers": [
-                    "> 1%",
-                    "last 2 versions"
-                ]
-            }
-        }],
+            "targets":  "> 1%, last 2 versions"
+        }], //move from targets.browsers vertion because this will be removed in later version
         "@babel/preset-react"
     ],
     "plugins": [
